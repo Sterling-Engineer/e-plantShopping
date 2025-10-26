@@ -41,12 +41,14 @@ function CartItem({ onContinueShopping }) {
 
   // Continue Shopping - call parent handler
   const handleContinueShopping = (e) => {
+    e.preventDefault();
     onContinueShopping(e);
   };
 
-  // Placeholder for checkout
+  // 🛒 Checkout placeholder
   const handleCheckoutShopping = (e) => {
-    alert("Functionality to be added for future reference");
+    e.preventDefault();
+    alert("🛒 Checkout Coming Soon! Stay tuned for updates.");
   };
 
   return (

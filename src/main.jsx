@@ -1,3 +1,5 @@
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 // Import React and ReactDOM to render the application
 import React from 'react';
 import ReactDOM from 'react-dom/client';
