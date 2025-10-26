@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeItem, updateQuantity } from "./CartSlice";
+import { addItem, removeItem, updateQuantity } from "./CartSlice";
 import "./CartItem.css";
 
 function CartItem({ onContinueShopping }) {
@@ -12,19 +12,20 @@ function CartItem({ onContinueShopping }) {
     return parseFloat(item.cost.substring(1)) * item.quantity;
   };
 
-  // Calculate total cost for all items
+  // Calculate total amount for all items
   const calculateTotalAmount = () => {
-    let total = 0;
-    cartItems.forEach((item) => {
-      total += calculateTotalCost(item);
-    });
+    const total = cartItems.reduce((sum, item) => {
+      return sum + calculateTotalCost(item);
+    }, 0);
     return total.toFixed(2);
   };
 
+  // Increment item quantity
   const handleIncrement = (item) => {
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
+  // Decrement item quantity or remove item if it would reach zero
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
       dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
@@ -33,17 +34,25 @@ function CartItem({ onContinueShopping }) {
     }
   };
 
+  // Remove item completely from the cart
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
 
-  const handleCheckoutShopping = () => {
+  // Continue Shopping - call parent handler
+  const handleContinueShopping = (e) => {
+    onContinueShopping(e);
+  };
+
+  // Placeholder for checkout
+  const handleCheckoutShopping = (e) => {
     alert("Functionality to be added for future reference");
   };
 
   return (
     <div className="cart-container">
       <h2>Shopping Cart</h2>
+
       {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
@@ -83,10 +92,23 @@ function CartItem({ onContinueShopping }) {
               ))}
             </tbody>
           </table>
+
           <div className="cart-summary">
             <h3>Total Amount: ${calculateTotalAmount()}</h3>
-            <button onClick={handleCheckoutShopping}>Checkout</button>
-            <button onClick={onContinueShopping}>Continue Shopping</button>
+            <div className="actions">
+              <button
+                className="checkout-button"
+                onClick={handleCheckoutShopping}
+              >
+                Checkout
+              </button>
+              <button
+                className="continue-button"
+                onClick={handleContinueShopping}
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         </>
       )}

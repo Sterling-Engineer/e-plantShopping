@@ -8,7 +8,6 @@ function ProductList({ onHomeClick }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items); // Redux cart state
   const [showCart, setShowCart] = useState(false);
-  const [showPlants, setShowPlants] = useState(false);
 
   const plantsArray = [
     {
@@ -37,24 +36,30 @@ function ProductList({ onHomeClick }) {
 
   const handleHomeClick = (e) => { e.preventDefault(); onHomeClick(); };
   const handleCartClick = (e) => { e.preventDefault(); setShowCart(true); };
-  const handlePlantsClick = (e) => { e.preventDefault(); setShowPlants(true); setShowCart(false); };
   const handleContinueShopping = (e) => { e.preventDefault(); setShowCart(false); };
 
+  // Add to Cart action (from Redux)
+  const handleAddToCart = (plant) => {
+    dispatch(addItem({ ...plant, quantity: 1 }));
+  };
+
+  // Check if a plant is already in the cart
   const isInCart = (plant) => {
     const item = cartItems.find(i => i.name === plant.name);
     return item?.quantity > 0;
   };
 
-  const handleAddToCart = (plant) => {
-    dispatch(addItem({ ...plant, quantity: 1 }));
+  // Calculate total quantity of all items in cart
+  const calculateTotalQuantity = () => {
+    return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
   };
 
   return (
     <div>
       <div className="navbar">
         <a href="/" onClick={handleHomeClick}>Home</a>
-        <a href="#" onClick={handlePlantsClick}>Plants</a>
-        <a href="#" onClick={handleCartClick}>Cart ({cartItems.length})</a>
+        <a href="#" onClick={() => setShowCart(false)}>Plants</a>
+        <a href="#" onClick={handleCartClick}>Cart ({calculateTotalQuantity()})</a>
       </div>
 
       {!showCart ? (
